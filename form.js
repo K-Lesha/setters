@@ -329,17 +329,23 @@ $(document).ready(function () {
     $(document).on('keydown', '.form_input', function (e) {
         if (e.key === 'Enter') {
             e.preventDefault();
-            const $input = $(this);
-            if ($input.val().trim().length == 0) return false;
-    
-            // Проверка email если надо
-            if (($input.attr('id') == 'contact-2' && $('#how_to_contact-2').val() == 'email') ||
-                ($input.attr('id') == 'contact-3' && $('#how_to_contact_-3').val() == 'email')) {
-                if (!isEmailValid($input.val())) return false;
+            if ($(this).attr('id') == 'brief') {
+                updateProgress($(this), 'text');
+                $(this).blur();
             }
-    
-            $input.blur(); // убираем фокус
-            updateProgress($input, 'text'); // двигаем форму дальше
+            if ($(this).val().length == 0) return false;
+            if ($('#i_want').val() == 'vacancy' && $(this).attr('id') == 'contact-2') {
+                if (!isEmailValid($(this).val())) {
+                    return false;
+                }
+            }
+            if ($('#how_to_contact_-3').val() == 'email' && $(this).attr('id') == 'contact-3') {
+                if (!isEmailValid($(this).val())) {
+                    return false;
+                }
+            }
+            updateProgress($(this), 'text');
+            $(this).blur();
         }
     });
 
@@ -737,12 +743,11 @@ $(document).ready(function () {
                 if (focus) {
                     focus.removeClass('hidden');
                     focus.addClass('animated');
-    
+                    focus.focus();
+
                     if (focus.hasClass('input_wrapper')) {
                         focus.addClass('active');
-                        focus.find('input').focus().select(); // Фокус прямо в input
-                    } else {
-                        focus.focus(); // если вдруг другой тип
+                        focus.find('input').focus();
                     }
                 }
             },
@@ -750,18 +755,14 @@ $(document).ready(function () {
                 value: "",
                 delimiter: ""
             },
-            duration: 0.5, // чуть быстрее для живости
+            duration: 1.2,
             ease: "none"
         });
-        setTimeout(function() {
-            if (focus && focus.find('input').length > 0) {
-                focus.find('input').focus().select();
-            }
-        }, 600); // чтобы точно после анимации
+        if (window.screen.width > 768) window.scrollTo(0, 10000);
     }
-
     $(document).find('.section-form').show();
     $('.form > .form_line:first').removeClass('hidden');
+    $('.form_input').css('box-shadow', '0 2px 8px rgba(0, 0, 0, 0.1)');
     // Начальная анимация
     tl.from($('.form > .form_line:first .text-form')[0], {
         onComplete: function () {
